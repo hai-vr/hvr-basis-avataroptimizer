@@ -14,3 +14,10 @@ The following has been implemented so far:
   - Keeps track of which blendshapes vary (face tracking, viseme, blink) and keeps them.
   - Bakes non-varying blendshapes into the mesh (only if all SMRs that reference that mesh have the same value).
   - Removes unused blendshapes.
+
+
+---
+
+## Third-party acknowledgements
+
+- Portions of the code is based on [d4rkAvatarOptimizer](https://github.com/d4rkc0d3r/d4rkAvatarOptimizer/) by d4rkpl4y3r.

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Basis.Scripts.BasisSdk;
+using HVR.Basis.AvatarOptimizer.d4rk;
 using HVR.Basis.Comms;
 using HVR.Basis.Optimizable;
 using UnityEngine;
@@ -93,6 +94,8 @@ namespace HVR.Basis.AvatarOptimizer
             {
                 results.Add(new HVROptimizableAutomaticFaceTrackingProxy(automaticFaceTracking));
             }
+            
+            results.Add(new PreemptiveProxy(assetRoot));
 
             var affectedByOptimization = assetRoot.GetComponentsInChildren<IHVRAffectsOptimizers>(true);
             results.AddRange(affectedByOptimization);
