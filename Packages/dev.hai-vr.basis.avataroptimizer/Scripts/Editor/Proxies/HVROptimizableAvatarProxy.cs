@@ -59,9 +59,9 @@ namespace HVR.Basis.AvatarOptimizer
             
             foreach (var command in commands)
             {
-                if (command.kind == HVROptimizationCommandKind.BlendShapeListChanged)
+                if (command.kind == HVROptimizationCommandKind.BlendShapeListReduced)
                 {
-                    var changed = (HVROptimizationCommandBlendShapeListChanged)command.value;
+                    var changed = (HVROptimizationCommandBlendShapeListReduced)command.value;
                     if (isVisemeMeshValid)
                     {
                         RebuildIndexIfApplicable(avatar.FaceVisemeMovement, avatar.FaceVisemeMesh, changed);
@@ -74,14 +74,14 @@ namespace HVR.Basis.AvatarOptimizer
             }
         }
 
-        private void RebuildIndexIfApplicable(int[] arrayMutated, SkinnedMeshRenderer smr, HVROptimizationCommandBlendShapeListChanged changed)
+        private void RebuildIndexIfApplicable(int[] arrayMutated, SkinnedMeshRenderer smr, HVROptimizationCommandBlendShapeListReduced reduced)
         {
-            if (changed.subjectMesh != smr.sharedMesh) return;
+            if (reduced.subjectMesh != smr.sharedMesh) return;
             
             for (var index = 0; index < arrayMutated.Length; index++)
             {
                 var previousIndex = arrayMutated[index];
-                arrayMutated[index] = changed.ResolveNewIndexOrMinusOne(previousIndex);
+                arrayMutated[index] = reduced.ResolveNewIndexOrMinusOne(previousIndex);
             }
         }
     }

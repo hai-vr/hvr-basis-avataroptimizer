@@ -121,8 +121,8 @@ namespace HVR.Basis.AvatarOptimizer
                 {
                     emittedCommands.Add(new HVROptimizationCommand
                     {
-                        kind = HVROptimizationCommandKind.BlendShapeListChanged,
-                        value = new HVROptimizationCommandBlendShapeListChanged
+                        kind = HVROptimizationCommandKind.BlendShapeListReduced,
+                        value = new HVROptimizationCommandBlendShapeListReduced
                         {
                             subjectMesh = blendShapeReport.mesh,
                             blendShapeNamesBefore = blendShapeReport.existingBlendShapes.ToList(),
@@ -141,8 +141,8 @@ namespace HVR.Basis.AvatarOptimizer
         public void Apply(List<HVROptimizationCommand> commands)
         {
             var blendShapeCommands = commands
-                .Where(command => command.kind == HVROptimizationCommandKind.BlendShapeListChanged)
-                .Select(command => (HVROptimizationCommandBlendShapeListChanged)command.value)
+                .Where(command => command.kind == HVROptimizationCommandKind.BlendShapeListReduced)
+                .Select(command => (HVROptimizationCommandBlendShapeListReduced)command.value)
                 .ToList();
 
             var meshToSmr = assetRoot
@@ -229,9 +229,25 @@ namespace HVR.Basis.AvatarOptimizer
                         }
                     }
 
+                    var newBlendShapeCount = newMesh.blendShapeCount;
                     foreach (var smr in smrs)
                     {
+                        var newWeightsToAssign = new List<float>();
+                        for (var newBlendShapeIndex = 0; newBlendShapeIndex < newBlendShapeCount; newBlendShapeIndex++)
+                        {
+                            var newBlendShapeName = blendShapeCommand.blendShapeNamesAfter[newBlendShapeIndex];
+                            var oldIndex = blendShapeCommand.blendShapeNamesBefore.IndexOf(newBlendShapeName);
+                            
+                            newWeightsToAssign.Add(smr.GetBlendShapeWeight(oldIndex));
+                        }
+
                         smr.sharedMesh = newMesh;
+
+                        for (var newIndex = 0; newIndex < newWeightsToAssign.Count; newIndex++)
+                        {
+                            var newWeight = newWeightsToAssign[newIndex];
+                            smr.SetBlendShapeWeight(newIndex, newWeight);
+                        }
                     }
                 }
             }

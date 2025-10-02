@@ -26,7 +26,7 @@ namespace HVR.Basis.Optimizable
     {
         GameObjectRemoved,
         ComponentRemoved,
-        BlendShapeListChanged
+        BlendShapeListReduced
     }
 
     public class HVROptimizationCommandGameObjectRemoved
@@ -39,7 +39,7 @@ namespace HVR.Basis.Optimizable
         public List<Component> components;
     }
 
-    public class HVROptimizationCommandBlendShapeListChanged
+    public class HVROptimizationCommandBlendShapeListReduced
     {
         public Mesh subjectMesh;
         public List<string> blendShapeNamesBefore;
