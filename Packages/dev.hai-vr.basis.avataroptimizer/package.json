@@ -2,7 +2,7 @@
     "name": "dev.hai-vr.basis.avataroptimizer",
     "displayName": "HVR Basis AvatarOptimizer",
     "version": "0.0.1",
-    "description": "HVR Basis AvatarOptimizer",
+    "description": "An avatar optimizer designed for Basis Framework avatars.",
     "unity": "6000.0",
     "author": "Haï~",
     "vpmDependencies": {
