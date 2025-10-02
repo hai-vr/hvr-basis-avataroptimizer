@@ -123,7 +123,7 @@ jobs:
         with:
           tag_name: ${{ needs.build-package1.outputs.version }}
           files: |
-            ./package1/${{ needs.build-package1.outputs.zipFile }}
-            ./package1/${{ needs.build-package1.outputs.unityPackage }}
-            ./package2/${{ needs.build-package2.outputs.zipFile }}
-            ./package2/${{ needs.build-package2.outputs.unityPackage }}
+            ./package1-artifacts/${{ needs.build-package1.outputs.zipFile }}
+            ./package1-artifacts/${{ needs.build-package1.outputs.unityPackage }}
+            ./package2-artifacts/${{ needs.build-package2.outputs.zipFile }}
+            ./package2-artifacts/${{ needs.build-package2.outputs.unityPackage }}
