@@ -3,7 +3,9 @@
     "rootNamespace": "",
     "references": [
         "BasisSDK",
-        "HVR.Basis.Optimizable"
+        "HVR.Basis.Optimizable",
+        "nadena.dev.ndmf",
+        "BasisDebug"
     ],
     "includePlatforms": [
         "Editor"

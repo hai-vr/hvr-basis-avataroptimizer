@@ -41,7 +41,7 @@ namespace HVR.Basis.Optimizable
 
     public class HVROptimizationCommandBlendShapeListChanged
     {
-        public SkinnedMeshRenderer subject;
+        public Mesh subjectMesh;
         public List<string> blendShapeNamesBefore;
         public List<string> blendShapeNamesAfter;
 

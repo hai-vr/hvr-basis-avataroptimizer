@@ -23,22 +23,25 @@ namespace HVR.Basis.Optimizable
         /// Tags that Component is effectively OFF, despite it being potentially ON by default in the scene. A togglable may overrule that.
         ComponentEffectivelyOff,
         
+        /// Tags that Component must be able to execute itself even if it is disabled or the GameObject hierarchy it belongs in is disabled.
+        ComponentRunsEvenWhenOff,
+        
         /// (HVROptimizationGroupBlendShape) Sets the value of those BlendShapes to all the subjects at once.
-        BlendShape,
+        BlendShapeVaries,
         
         // (HVROptimizationGroupMaterialPropertyBlock) Sets the material shader property inside all the subjects at once.
-        MaterialPropertyBlock,
+        MaterialPropertyBlockVaries,
         
         // Can change a specific material slot of all the subjects at once.
         ProvidesSupplementalMaterials
     }
 
-    public class HVROptimizationGroupBlendShape
+    public class HVROptimizationGroupBlendShapeVaries
     {
         public string[] blendShapeNames;
     }
 
-    public class HVROptimizationMaterialPropertyBlock
+    public class HVROptimizationMaterialPropertyBlockVaries
     {
         public string[] shaderPropertyNames;
     }

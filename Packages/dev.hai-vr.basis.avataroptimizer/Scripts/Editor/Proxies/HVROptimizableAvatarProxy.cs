@@ -40,9 +40,9 @@ namespace HVR.Basis.AvatarOptimizer
                 {
                     resultsMutated.Add(new HVROptimizationGroup
                     {
-                        kind = HVROptimizationGroupKind.BlendShape,
+                        kind = HVROptimizationGroupKind.BlendShapeVaries,
                         subjects = new Component[] { smr },
-                        value = new HVROptimizationGroupBlendShape
+                        value = new HVROptimizationGroupBlendShapeVaries
                         {
                             blendShapeNames = new[]{ sharedMesh.GetBlendShapeName(movement) }
                         }
@@ -76,7 +76,7 @@ namespace HVR.Basis.AvatarOptimizer
 
         private void RebuildIndexIfApplicable(int[] arrayMutated, SkinnedMeshRenderer smr, HVROptimizationCommandBlendShapeListChanged changed)
         {
-            if (changed.subject != smr) return;
+            if (changed.subjectMesh != smr.sharedMesh) return;
             
             for (var index = 0; index < arrayMutated.Length; index++)
             {
