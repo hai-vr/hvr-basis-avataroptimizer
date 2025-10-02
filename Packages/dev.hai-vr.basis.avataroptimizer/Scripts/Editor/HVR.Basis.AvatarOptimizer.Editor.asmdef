@@ -2,6 +2,8 @@
     "name": "HVR.Basis.AvatarOptimizer.Editor",
     "rootNamespace": "",
     "references": [
+        "BasisSDK",
+        "HVR.Basis.Optimizable"
     ],
     "includePlatforms": [
         "Editor"
