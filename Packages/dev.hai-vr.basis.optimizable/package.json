@@ -1,6 +1,14 @@
 {
-  "name": "dev.hai-vr.basis.optimizable",
-  "displayName": "HVR Basis Optimizable",
-  "version": "0.0.1",
-  "description": "HVR Basis Optimizable"
+    "name": "dev.hai-vr.basis.optimizable",
+    "displayName": "HVR Basis Optimizable",
+    "version": "0.0.1",
+    "description": "HVR Basis Optimizable",
+    "unity": "6000.0",
+    "author": "Haï~",
+    "vpmDependencies": {
+    },
+    "url": "https://docs.hai-vr.dev/docs/basis/avatar-optimizer",
+    "documentationUrl": "https://docs.hai-vr.dev/docs/basis/avatar-optimizer",
+    "changelogUrl": "https://docs.hai-vr.dev/docs/basis/avatar-optimizer",
+    "license": "MIT"
 }
