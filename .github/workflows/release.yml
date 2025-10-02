@@ -1,0 +1,129 @@
+name: Build Release
+
+on:
+  workflow_dispatch:
+
+env:
+  packageName1: "dev.hai-vr.basis.avataroptimizer"
+  packageName2: "dev.hai-vr.basis.optimizable"
+
+permissions:
+  contents: write
+
+jobs:
+  build-package1:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.prop }}
+      zipFile: ${{ steps.set-vars.outputs.zipFile }}
+      unityPackage: ${{ steps.set-vars.outputs.unityPackage }}
+      packageName: ${{ env.packageName1 }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: get version
+        id: version
+        uses: notiz-dev/github-action-json-property@7c8cf5cc36eb85d8d287a8086a39dac59628eb31
+        with:
+          path: "Packages/${{env.packageName1}}/package.json"
+          prop_path: "version"
+
+      - name: Set Environment Variables
+        id: set-vars
+        run: |
+          echo "zipFile=${{ env.packageName1 }}-${{ steps.version.outputs.prop }}.zip" >> $GITHUB_ENV
+          echo "unityPackage=${{ env.packageName1 }}-${{ steps.version.outputs.prop }}.unitypackage" >> $GITHUB_ENV
+          echo "zipFile=${{ env.packageName1 }}-${{ steps.version.outputs.prop }}.zip" >> $GITHUB_OUTPUT
+          echo "unityPackage=${{ env.packageName1 }}-${{ steps.version.outputs.prop }}.unitypackage" >> $GITHUB_OUTPUT
+
+      - name: Create Zip
+        uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
+        with:
+          type: "zip"
+          directory: "Packages/${{env.packageName1}}/"
+          filename: "../../${{env.zipFile}}" # make the zip file two directories up, since we start two directories in above
+
+      - run: find "Packages/${{env.packageName1}}/" -name \*.meta >> metaList
+
+      - name: Create UnityPackage
+        uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
+        with:
+          package-path: ${{ env.unityPackage }}
+          include-files: metaList
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package1-artifacts
+          path: |
+            ${{ env.zipFile }}
+            ${{ env.unityPackage }}
+            Packages/${{ env.packageName1 }}/package.json
+
+  build-package2:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.prop }}
+      zipFile: ${{ steps.set-vars.outputs.zipFile }}
+      unityPackage: ${{ steps.set-vars.outputs.unityPackage }}
+      packageName: ${{ env.packageName2 }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: get version
+        id: version
+        uses: notiz-dev/github-action-json-property@7c8cf5cc36eb85d8d287a8086a39dac59628eb31
+        with:
+          path: "Packages/${{env.packageName2}}/package.json"
+          prop_path: "version"
+
+      - name: Set Environment Variables
+        id: set-vars
+        run: |
+          echo "zipFile=${{ env.packageName2 }}-${{ steps.version.outputs.prop }}.zip" >> $GITHUB_ENV
+          echo "unityPackage=${{ env.packageName2 }}-${{ steps.version.outputs.prop }}.unitypackage" >> $GITHUB_ENV
+          echo "zipFile=${{ env.packageName2 }}-${{ steps.version.outputs.prop }}.zip" >> $GITHUB_OUTPUT
+          echo "unityPackage=${{ env.packageName2 }}-${{ steps.version.outputs.prop }}.unitypackage" >> $GITHUB_OUTPUT
+
+      - name: Create Zip
+        uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
+        with:
+          type: "zip"
+          directory: "Packages/${{env.packageName2}}/"
+          filename: "../../${{env.zipFile}}" # make the zip file two directories up, since we start two directories in above
+
+      - run: find "Packages/${{env.packageName2}}/" -name \*.meta >> metaList
+
+      - name: Create UnityPackage
+        uses: pCYSl5EDgo/create-unitypackage@cfcd3cf0391a5ef1306342794866a9897c32af0b
+        with:
+          package-path: ${{ env.unityPackage }}
+          include-files: metaList
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package2-artifacts
+          path: |
+            ${{ env.zipFile }}
+            ${{ env.unityPackage }}
+            Packages/${{ env.packageName2 }}/package.json
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build-package1, build-package2]
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Make Release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        with:
+          tag_name: ${{ needs.build-package1.outputs.version }}
+          files: |
+            ./package1/${{ needs.build-package1.outputs.zipFile }}
+            ./package1/${{ needs.build-package1.outputs.unityPackage }}
+            ./package2/${{ needs.build-package2.outputs.zipFile }}
+            ./package2/${{ needs.build-package2.outputs.unityPackage }}
