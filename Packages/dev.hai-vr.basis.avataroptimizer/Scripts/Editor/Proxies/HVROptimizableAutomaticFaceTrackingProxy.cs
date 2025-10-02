@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace HVR.Basis.AvatarOptimizer
 {
-    public class HVROptimizableAutomaticFaceTrackingProxy : IHVRAffectsOptimizers
+    internal class HVROptimizableAutomaticFaceTrackingProxy : IHVRAffectsOptimizers
     {
         private readonly AutomaticFaceTracking automaticFaceTracking;
 

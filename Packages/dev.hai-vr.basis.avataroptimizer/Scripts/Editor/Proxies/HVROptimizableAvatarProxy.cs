@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HVR.Basis.AvatarOptimizer
 {
-    public class HVROptimizableAvatarProxy : IHVRAffectsOptimizers
+    internal class HVROptimizableAvatarProxy : IHVRAffectsOptimizers
     {
         private readonly BasisAvatar avatar;
 
