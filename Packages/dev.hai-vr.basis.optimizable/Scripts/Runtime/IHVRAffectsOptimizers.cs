@@ -16,23 +16,6 @@ namespace HVR.Basis.Optimizable
         public void ProcessOptimizationCommands(List<HVROptimizationCommand> commands);
     }
 
-    public class HVROptimizationGroup
-    {
-        public Component[] subjects;
-        public HVROptimizationGroupKind kind;
-        public object value;
-    }
-
-    public enum HVROptimizationGroupKind
-    {
-        BlendShape
-    }
-
-    public class HVROptimizationGroupBlendShape
-    {
-        public string[] blendShapeNames;
-    }
-
     public class HVROptimizationCommand
     {
         public HVROptimizationCommandKind kind;
@@ -41,8 +24,19 @@ namespace HVR.Basis.Optimizable
 
     public enum HVROptimizationCommandKind
     {
+        GameObjectRemoved,
         ComponentRemoved,
         BlendShapeListChanged
+    }
+
+    public class HVROptimizationCommandGameObjectRemoved
+    {
+        public List<GameObject> gameObjects;
+    }
+
+    public class HVROptimizationCommandComponentRemoved
+    {
+        public List<Component> components;
     }
 
     public class HVROptimizationCommandBlendShapeListChanged
