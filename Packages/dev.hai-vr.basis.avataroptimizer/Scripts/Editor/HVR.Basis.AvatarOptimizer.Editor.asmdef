@@ -5,7 +5,8 @@
         "BasisSDK",
         "HVR.Basis.Optimizable",
         "nadena.dev.ndmf",
-        "BasisDebug"
+        "BasisDebug",
+        "HVR.Basis.Comms"
     ],
     "includePlatforms": [
         "Editor"
