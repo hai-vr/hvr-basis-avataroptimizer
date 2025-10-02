@@ -1,0 +1,64 @@
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+namespace HVR.Basis.Comms
+{
+    public interface IHVRAffectsOptimizers
+    {
+        /// Returns a list of groups. Each group is updated as a single unit independently.<br/>
+        /// For example, if this returns two groups: A group that changes 1 blendShape, and another group that changes 3 blendShapes,
+        /// then the 3 blendShapes *could* be merged into one blendShape as long as there is no other optimization group that modifies a subset.
+        public List<HVROptimizationGroup> ResolveOptimizationGroups();
+
+        /// Requests this component to prune itself due to optimization decisions that will be made.<br/>
+        /// For example, if a Renderer is going to be merged into another, then a ComponentRemoved command will be issued;
+        /// as it is assumed that all elements of an optimization group are affected the same way, then removing one will not affect the visible behavior.
+        public void ProcessOptimizationCommand(List<HVROptimizationCommand> commands);
+    }
+
+    public class HVROptimizationGroup
+    {
+        public Component[] subjects;
+        public HVROptimizationGroupKind kind;
+        public object value;
+    }
+
+    public enum HVROptimizationGroupKind
+    {
+        BlendShape
+    }
+
+    public class HVROptimizationGroupBlendShape
+    {
+        public string[] blendShapeNames;
+    }
+
+    public class HVROptimizationCommand
+    {
+        public HVROptimizationCommandKind kind;
+        public object value;
+    }
+
+    public enum HVROptimizationCommandKind
+    {
+        ComponentRemoved,
+        BlendShapeListChanged
+    }
+
+    public class HVROptimizationCommandBlendShapeListChanged
+    {
+        public SkinnedMeshRenderer subject;
+        public List<string> blendShapeNamesBefore;
+        public List<string> blendShapeNamesAfter;
+
+        public int ResolveNewIndexOrMinusOne(int indexOfBefore)
+        {
+            if (indexOfBefore < 0 || indexOfBefore >= blendShapeNamesBefore.Count) return -1;
+
+            var nameOfBefore = blendShapeNamesBefore[indexOfBefore];
+            var indexOfAfter = blendShapeNamesAfter.IndexOf(nameOfBefore);
+
+            return indexOfAfter;
+        }
+    }
+}
