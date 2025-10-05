@@ -16,7 +16,7 @@ namespace HVR.Basis.AvatarOptimizer
 
         public GameObjectOptimizationReport DecideWhatToDo(List<HVROptimizationGroup> optimizationGroups)
         {
-            var commands = new List<HVROptimizationCommand>();
+            var commands = new List<IHVROptimizationCommand>();
             
             var allTransforms = assetRoot.GetComponentsInChildren<Transform>(true).ToHashSet();
             
@@ -42,26 +42,18 @@ namespace HVR.Basis.AvatarOptimizer
             
             // At this point, we know that all Transforms and the Components inside those transforms in resolvedAlwaysOff are worthless.
             {
-                commands.Add(new HVROptimizationCommand
+                commands.Add(new HVROptimizationCommandGameObjectRemoved
                 {
-                    kind = HVROptimizationCommandKind.GameObjectRemoved,
-                    value = new HVROptimizationCommandGameObjectRemoved
-                    {
-                        gameObjects = resolvedAlwaysOff.Select(transform => transform.gameObject).ToList()
-                    }
+                    gameObjects = resolvedAlwaysOff.Select(transform => transform.gameObject).ToList()
                 });
-                commands.Add(new HVROptimizationCommand
+                commands.Add(new HVROptimizationCommandComponentRemoved
                 {
-                    kind = HVROptimizationCommandKind.ComponentRemoved,
-                    value = new HVROptimizationCommandComponentRemoved
-                    {
-                        components = resolvedAlwaysOff
-                            .SelectMany(transform => transform.GetComponents<Component>())
-                            // null is for missing scripts.
-                            .Where(component => component != null)
-                            .Where(component => component is not Transform)
-                            .ToList()
-                    }
+                    components = resolvedAlwaysOff
+                        .SelectMany(transform => transform.GetComponents<Component>())
+                        // null is for missing scripts.
+                        .Where(component => component != null)
+                        .Where(component => component is not Transform)
+                        .ToList()
                 });
             }
 
@@ -92,13 +84,13 @@ namespace HVR.Basis.AvatarOptimizer
             };
         }
 
-        public void ApplyDestructiveCommands(List<HVROptimizationCommand> commands)
+        public void ApplyDestructiveCommands(List<IHVROptimizationCommand> commands)
         {
             foreach (var command in commands)
             {
-                if (command.kind == HVROptimizationCommandKind.GameObjectRemoved)
+                if (command is HVROptimizationCommandGameObjectRemoved)
                 {
-                    var order = (HVROptimizationCommandGameObjectRemoved)command.value;
+                    var order = (HVROptimizationCommandGameObjectRemoved)command;
                     foreach (var go in order.gameObjects)
                     {
                         // May be destroyed by a previous iteration or another command.
@@ -109,9 +101,9 @@ namespace HVR.Basis.AvatarOptimizer
                         }
                     }
                 }
-                else if (command.kind == HVROptimizationCommandKind.ComponentRemoved)
+                else if (command is HVROptimizationCommandComponentRemoved)
                 {
-                    var order = (HVROptimizationCommandComponentRemoved)command.value;
+                    var order = (HVROptimizationCommandComponentRemoved)command;
                     foreach (var component in order.components)
                     {
                         // May be destroyed by a previous iteration or another command.
@@ -128,7 +120,7 @@ namespace HVR.Basis.AvatarOptimizer
 
     internal class GameObjectOptimizationReport
     {
-        public List<HVROptimizationCommand> emittedCommands;
+        public List<IHVROptimizationCommand> emittedCommands;
         public HashSet<Transform> enableable;
         public HashSet<Transform> alwaysOff;
     }

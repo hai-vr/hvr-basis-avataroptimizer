@@ -4,6 +4,7 @@ using Basis.Scripts.BasisSdk;
 using HVR.Basis.AvatarOptimizer.d4rk;
 using HVR.Basis.Comms;
 using HVR.Basis.Optimizable;
+using HVR.Basis.Vixxy.Runtime;
 using UnityEngine;
 
 namespace HVR.Basis.AvatarOptimizer
@@ -13,6 +14,7 @@ namespace HVR.Basis.AvatarOptimizer
         private readonly Transform assetRoot;
         private readonly GameObjectOptimizer gameObjectOptimizer;
         private readonly SkinnedMeshOptimizer skinnedMeshOptimizer;
+        private readonly VixxyOptimizer vixxyOptimizer;
 
         internal HVRBasisAvatarOptimizer(Transform assetRoot)
         {
@@ -20,9 +22,10 @@ namespace HVR.Basis.AvatarOptimizer
 
             gameObjectOptimizer = new GameObjectOptimizer(assetRoot);
             skinnedMeshOptimizer = new SkinnedMeshOptimizer(assetRoot);
+            vixxyOptimizer = new VixxyOptimizer(assetRoot);
         }
 
-        public List<HVROptimizationCommand> PreviewExecutionPlan()
+        public List<IHVROptimizationCommand> PreviewExecutionPlan()
         {
             var affectedBy = ResolveOptimizersOf(assetRoot);
             
@@ -46,7 +49,7 @@ namespace HVR.Basis.AvatarOptimizer
             ApplyDestructiveCommands(commands);
         }
 
-        private List<HVROptimizationCommand> PrepareExecutionPlan(List<IHVRAffectsOptimizers> affectedBy)
+        private List<IHVROptimizationCommand> PrepareExecutionPlan(List<IHVRAffectsOptimizers> affectedBy)
         {
             var optimizationGroups = affectedBy
                 .SelectMany(optimizers => optimizers.ResolveOptimizationGroups())
@@ -63,21 +66,24 @@ namespace HVR.Basis.AvatarOptimizer
             }
 
             // STUB: We start simple for now.
-            var allCommands = new List<HVROptimizationCommand>();
+            var allCommands = new List<IHVROptimizationCommand>();
             
             var gameObjectOptimizationReport = gameObjectOptimizer.DecideWhatToDo(optimizationGroups);
             var skinnedMeshOptimizationReport = skinnedMeshOptimizer.DecideWhatToDo(optimizationGroups, gameObjectOptimizationReport.enableable);
+            var vixxyReport = vixxyOptimizer.DecideWhatToDo(optimizationGroups, gameObjectOptimizationReport.enableable);
                 
             allCommands.AddRange(gameObjectOptimizationReport.emittedCommands);
             allCommands.AddRange(skinnedMeshOptimizationReport.emittedCommands);
+            allCommands.AddRange(vixxyReport.emittedCommands);
             
             return allCommands;
         }
 
-        private void ApplyDestructiveCommands(List<HVROptimizationCommand> commands)
+        private void ApplyDestructiveCommands(List<IHVROptimizationCommand> commands)
         {
             gameObjectOptimizer.ApplyDestructiveCommands(commands);
             skinnedMeshOptimizer.Apply(commands);
+            vixxyOptimizer.Apply(commands);
         }
 
         private static List<IHVRAffectsOptimizers> ResolveOptimizersOf(Transform assetRoot)
@@ -93,6 +99,11 @@ namespace HVR.Basis.AvatarOptimizer
             foreach (var automaticFaceTracking in assetRoot.GetComponentsInChildren<AutomaticFaceTracking>(true))
             {
                 results.Add(new HVROptimizableAutomaticFaceTrackingProxy(automaticFaceTracking));
+            }
+
+            foreach (var control in assetRoot.GetComponentsInChildren<P12VixxyControl>(true))
+            {
+                results.Add(new HVRVixxyProxy(control));
             }
             
             results.Add(new PreemptiveProxy(assetRoot));

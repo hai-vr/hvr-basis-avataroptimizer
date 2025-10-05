@@ -6,7 +6,8 @@
         "HVR.Basis.Optimizable",
         "nadena.dev.ndmf",
         "BasisDebug",
-        "HVR.Basis.Comms"
+        "HVR.Basis.Comms",
+        "HVR.Basis.Vixxy"
     ],
     "includePlatforms": [
         "Editor"

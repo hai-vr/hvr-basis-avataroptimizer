@@ -112,22 +112,18 @@ namespace HVR.Basis.AvatarOptimizer
                 })
                 .ToList();
 
-            var emittedCommands = new List<HVROptimizationCommand>();
+            var emittedCommands = new List<IHVROptimizationCommand>();
             
             foreach (var blendShapeReport in blendShapeReports)
             {
                 var isRelevant = !blendShapeReport.existingBlendShapes.SequenceEqual(blendShapeReport.resultingBlendShapes);
                 if (isRelevant)
                 {
-                    emittedCommands.Add(new HVROptimizationCommand
+                    emittedCommands.Add(new HVROptimizationCommandBlendShapeListReduced
                     {
-                        kind = HVROptimizationCommandKind.BlendShapeListReduced,
-                        value = new HVROptimizationCommandBlendShapeListReduced
-                        {
-                            subjectMesh = blendShapeReport.mesh,
-                            blendShapeNamesBefore = blendShapeReport.existingBlendShapes.ToList(),
-                            blendShapeNamesAfter = blendShapeReport.resultingBlendShapes.ToList()
-                        }
+                        subjectMesh = blendShapeReport.mesh,
+                        blendShapeNamesBefore = blendShapeReport.existingBlendShapes.ToList(),
+                        blendShapeNamesAfter = blendShapeReport.resultingBlendShapes.ToList()
                     });
                 }
             }
@@ -138,11 +134,10 @@ namespace HVR.Basis.AvatarOptimizer
             };
         }
 
-        public void Apply(List<HVROptimizationCommand> commands)
+        public void Apply(List<IHVROptimizationCommand> commands)
         {
             var blendShapeCommands = commands
-                .Where(command => command.kind == HVROptimizationCommandKind.BlendShapeListReduced)
-                .Select(command => (HVROptimizationCommandBlendShapeListReduced)command.value)
+                .OfType<HVROptimizationCommandBlendShapeListReduced>()
                 .ToList();
 
             var meshToSmr = assetRoot
@@ -346,6 +341,6 @@ namespace HVR.Basis.AvatarOptimizer
 
     internal class SkinnedMeshOptimizationReport
     {
-        public List<HVROptimizationCommand> emittedCommands;
+        public List<IHVROptimizationCommand> emittedCommands;
     }
 }

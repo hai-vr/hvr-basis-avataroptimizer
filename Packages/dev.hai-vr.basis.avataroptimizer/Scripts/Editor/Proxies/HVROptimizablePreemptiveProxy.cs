@@ -52,7 +52,7 @@ namespace HVR.Basis.AvatarOptimizer.d4rk
             }
         }
 
-        public void ProcessOptimizationCommands(List<HVROptimizationCommand> commands)
+        public void ProcessOptimizationCommands(List<IHVROptimizationCommand> commands)
         {
         }
     }

@@ -55,7 +55,7 @@ namespace HVR.Basis.AvatarOptimizer
             return results;
         }
 
-        public void ProcessOptimizationCommands(List<HVROptimizationCommand> commands)
+        public void ProcessOptimizationCommands(List<IHVROptimizationCommand> commands)
         {
             // Nothing to do. Everything is already evaluated at runtime.
         }

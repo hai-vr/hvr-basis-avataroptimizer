@@ -13,33 +13,24 @@ namespace HVR.Basis.Optimizable
         /// Requests this component to prune itself due to optimization decisions that will be made.<br/>
         /// For example, if a Renderer is going to be merged into another, then a ComponentRemoved command will be issued;
         /// as it is assumed that all elements of an optimization group are affected the same way, then removing one will not affect the visible behavior.
-        public void ProcessOptimizationCommands(List<HVROptimizationCommand> commands);
+        public void ProcessOptimizationCommands(List<IHVROptimizationCommand> commands);
     }
 
-    public class HVROptimizationCommand
+    public interface IHVROptimizationCommand
     {
-        public HVROptimizationCommandKind kind;
-        public object value;
     }
 
-    public enum HVROptimizationCommandKind
-    {
-        GameObjectRemoved,
-        ComponentRemoved,
-        BlendShapeListReduced
-    }
-
-    public class HVROptimizationCommandGameObjectRemoved
+    public class HVROptimizationCommandGameObjectRemoved : IHVROptimizationCommand
     {
         public List<GameObject> gameObjects;
     }
 
-    public class HVROptimizationCommandComponentRemoved
+    public class HVROptimizationCommandComponentRemoved : IHVROptimizationCommand
     {
         public List<Component> components;
     }
 
-    public class HVROptimizationCommandBlendShapeListReduced
+    public class HVROptimizationCommandBlendShapeListReduced : IHVROptimizationCommand
     {
         public Mesh subjectMesh;
         public List<string> blendShapeNamesBefore;

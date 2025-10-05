@@ -51,7 +51,7 @@ namespace HVR.Basis.AvatarOptimizer
             }
         }
 
-        public void ProcessOptimizationCommands(List<HVROptimizationCommand> commands)
+        public void ProcessOptimizationCommands(List<IHVROptimizationCommand> commands)
         {
             var isVisemeMeshValid = avatar.FaceVisemeMesh != null && avatar.FaceVisemeMesh.sharedMesh != null;
             var isBlinkMeshValid = avatar.FaceBlinkMesh != null && avatar.FaceBlinkMesh.sharedMesh != null;
@@ -59,9 +59,9 @@ namespace HVR.Basis.AvatarOptimizer
             
             foreach (var command in commands)
             {
-                if (command.kind == HVROptimizationCommandKind.BlendShapeListReduced)
+                if (command is HVROptimizationCommandBlendShapeListReduced)
                 {
-                    var changed = (HVROptimizationCommandBlendShapeListReduced)command.value;
+                    var changed = (HVROptimizationCommandBlendShapeListReduced)command;
                     if (isVisemeMeshValid)
                     {
                         RebuildIndexIfApplicable(avatar.FaceVisemeMovement, avatar.FaceVisemeMesh, changed);
